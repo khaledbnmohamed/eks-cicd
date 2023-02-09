@@ -1,6 +1,6 @@
 # define aws region
 variable "region" {
-  default = "ap-southeast-2"
+  default = "us-east-1"
 }
 
 # CodeCommit and ECR repo name, also as artifact bucket prefix
