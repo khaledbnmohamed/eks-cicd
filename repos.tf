@@ -1,13 +1,13 @@
 # CodeCommit repo
 resource "aws_codecommit_repository" "tf-eks-git" {
-  repository_name = "${var.repo_name}"
+  repository_name = var.repo_name
   description     = "Terraform EKS repository"
-  default_branch  = "${var.default_branch}"
+  default_branch  = var.default_branch
 }
 
 # ECR repo
 resource "aws_ecr_repository" "tf-eks-ecr" {
-  name = "${var.repo_name}"
+  name = var.repo_name
 }
 
 # random string for bucket name

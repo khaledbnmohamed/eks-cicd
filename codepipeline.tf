@@ -1,97 +1,103 @@
-# # create a 3 stage pipeline
-# resource "aws_codepipeline" "tf-eks-pipeline" {
-#   name     = "${var.repo_name}"
-#   role_arn = "${aws_iam_role.tf-eks-pipeline.arn}"
+# create a 3 stage pipeline
+resource "aws_codepipeline" "tf-eks-pipeline" {
+  name     = var.repo_name
+  role_arn = aws_iam_role.tf-eks-pipeline.arn
 
-#   artifact_store {
-#     location = "${aws_s3_bucket.build_artifact_bucket.bucket}"
-#     type     = "S3"
+  artifact_store {
+    location = aws_s3_bucket.build_artifact_bucket.bucket
+    type     = "S3"
 
-#     encryption_key  {
-#       id   = "${aws_kms_key.artifact_encryption_key.arn}"
-#       type = "KMS"
-#     }
-#   }
+    encryption_key {
+      id   = aws_kms_key.artifact_encryption_key.arn
+      type = "KMS"
+    }
+  }
 
-#   stage {
-#     name = "Source"
+  stage {
+    name = "Source"
 
-#     action {
-#       name             = "Source"
-#       category         = "Source"
-#       owner            = "AWS"
-#       provider         = "CodeCommit"
-#       version          = "1"
-#       output_artifacts = ["source"]
+    action {
+      name             = "Source"
+      category         = "Source"
+      owner            = "AWS"
+      provider         = "CodeStarSourceConnection"
+      version          = "1"
+      output_artifacts = ["source"]
 
-#       configuration = {
-#         RepositoryName = "${var.repo_name}"
-#         BranchName     = "${var.default_branch}"
-#       }
-#     }
-#   }
+      configuration = {
+        ConnectionArn    = one(aws_codestarconnections_connection._.*.arn)
+        FullRepositoryId = "${var.git_owner}/${var.git_repo}"
+        BranchName       = var.git_branch
+      }
+    }
+  }
 
-#   stage {
-#     name = "Build"
+  stage {
+    name = "Build"
 
-#     action {
-#       name             = "Build"
-#       category         = "Build"
-#       owner            = "AWS"
-#       provider         = "CodeBuild"
-#       input_artifacts  = ["source"]
-#       version          = "1"
+    action {
+      name            = "Build"
+      category        = "Build"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      input_artifacts = ["source"]
+      version         = "1"
 
-#       configuration = {
-#         ProjectName = "${aws_codebuild_project.tf-eks-build.name}"
-#       }
-#     }
-#   }
+      configuration = {
+        ProjectName = "${aws_codebuild_project.tf-eks-build.name}"
+      }
+    }
+  }
 
-#   stage {
-#     name = "StagingDeploy"
+  stage {
+    name = "StagingDeploy"
 
-#     action {
-#       name             = "StagingDeploy"
-#       category         = "Build"
-#       owner            = "AWS"
-#       provider         = "CodeBuild"
-#       input_artifacts  = ["source"]
-#       version          = "1"
+    action {
+      name            = "StagingDeploy"
+      category        = "Build"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      input_artifacts = ["source"]
+      version         = "1"
 
-#       configuration = {
-#         ProjectName = "${aws_codebuild_project.tf-eks-deploy-staging.name}"
-#       }
-#     }
-#   }
+      configuration = {
+        ProjectName = "${aws_codebuild_project.tf-eks-deploy-staging.name}"
+      }
+    }
+  }
 
-#   stage {
-#     name = "PromoteToProd"
+  stage {
+    name = "PromoteToProd"
 
-#     action {
-#       name             = "PromoteToProd"
-#       category         = "Approval"
-#       owner            = "AWS"
-#       provider         = "Manual"
-#       version          = "1"
-#     }
-#   }
+    action {
+      name     = "PromoteToProd"
+      category = "Approval"
+      owner    = "AWS"
+      provider = "Manual"
+      version  = "1"
+    }
+  }
 
-#   stage {
-#     name = "ProdDeploy"
+  stage {
+    name = "ProdDeploy"
 
-#     action {
-#       name             = "ProdDeploy"
-#       category         = "Build"
-#       owner            = "AWS"
-#       provider         = "CodeBuild"
-#       input_artifacts  = ["source"]
-#       version          = "1"
-#       configuration = {
-#         ProjectName = "${aws_codebuild_project.tf-eks-deploy-prod.name}"
-#       }
-#     }
-#   }
+    action {
+      name            = "ProdDeploy"
+      category        = "Build"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      input_artifacts = ["source"]
+      version         = "1"
+      configuration = {
+        ProjectName = "${aws_codebuild_project.tf-eks-deploy-prod.name}"
+      }
+    }
+  }
 
-# }
+}
 
+
+resource "aws_codestarconnections_connection" "_" {
+  name          = "codestar-cs"
+  provider_type = "GitHub"
+}

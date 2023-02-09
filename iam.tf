@@ -23,7 +23,7 @@ EOF
 
 # iam policy for codepipeline role
 resource "aws_iam_role_policy" "tf-eks-pipeline" {
-  role = "${aws_iam_role.tf-eks-pipeline.name}"
+  role = aws_iam_role.tf-eks-pipeline.name
 
   policy = <<POLICY
 {

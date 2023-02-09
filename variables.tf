@@ -32,3 +32,33 @@ variable "deploy_image" {
 variable "deploy_spec" {
   default = "buildspec/deploy.yml"
 }
+
+
+variable "git_provider_type" {
+  description = "Codestar connections support; GitHub, Bitbucket"
+  default     = "GitHub"
+}
+
+variable "git_owner" {
+  type        = string
+  description = "owner"
+  default     = "khaledbnmohamed"
+}
+
+variable "git_repo" {
+  type        = string
+  description = "Github repository name"
+  default     = "test-demo"
+}
+
+variable "git_branch" {
+  type        = string
+  description = "Github branch name"
+  default     = "master"
+}
+
+variable "codepipeline_module_enabled" {
+  type        = bool
+  description = "(Optional) Whether to create resources within the module or not. Default is true."
+  default     = true
+}
