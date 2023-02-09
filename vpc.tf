@@ -1,3 +1,7 @@
+
+# get all availability zones
+data "aws_availability_zones" "available" {}
+
 # create a VPC with public and private subets across all 3 AZs
 module "vpc" {
   source             = "terraform-aws-modules/vpc/aws"

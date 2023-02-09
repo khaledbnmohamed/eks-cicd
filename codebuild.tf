@@ -27,7 +27,7 @@ resource "aws_codebuild_project" "tf-eks-build" {
 
 }
 
-# staging deploy
+# deploy
 resource "aws_codebuild_project" "tf-eks-deploy" {
   name         = "tf-eks-deploy"
   description  = "Terraform EKS Deploy"
