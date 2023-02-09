@@ -54,7 +54,7 @@ variable "git_repo" {
 variable "git_branch" {
   type        = string
   description = "Github branch name"
-  default     = "master"
+  default     = "main"
 }
 
 variable "codepipeline_module_enabled" {

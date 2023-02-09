@@ -86,6 +86,11 @@ resource "aws_iam_role_policy" "tf-eks-pipeline" {
         ],
         "Resource": "${aws_kms_key.artifact_encryption_key.arn}",
         "Effect": "Allow"
+    },
+    {
+        "Effect": "Allow",
+        "Action": "codestar-connections:UseConnection",
+        "Resource": "*"
     }
   ]
 }
