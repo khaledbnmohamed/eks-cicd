@@ -39,7 +39,7 @@ resource "aws_codebuild_project" "tf-eks-deploy" {
 
   environment {
     compute_type    = "BUILD_GENERAL1_SMALL"
-    image           = var.deploy_image
+    image           = "aws/codebuild/standard:5.0"
     type            = "LINUX_CONTAINER"
     privileged_mode = false
 

@@ -20,6 +20,13 @@ locals {
       groups   = ["system:masters"]
     },
   ]
+    map_users = [
+      {
+        userarn  = "${var.user_arn}"
+        username = "codepipeline"
+        groups   = ["system:masters"]
+      },
+    ]
   # worker_groups_launch_template = [
   #   {
   #     # This will launch an autoscaling group with only Spot Fleet instances

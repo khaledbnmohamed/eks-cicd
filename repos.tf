@@ -2,6 +2,9 @@ resource "aws_ecr_repository" "tf-eks-ecr" {
   name = var.repo_name
 }
 
+resource "aws_ecr_repository" "front-eks-ecr" {
+  name = var.front_repo_name
+}
 resource "random_string" "suffix" {
   length  = 5
   upper   = false

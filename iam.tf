@@ -15,6 +15,18 @@ resource "aws_iam_role" "tf-eks-pipeline" {
         ]
       },
       "Action": "sts:AssumeRole"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::${var.user_account}:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/${module.eks.oidc_provider_arn}"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "oidc.eks.us-east-1.amazonaws.com/id/${module.eks.oidc_provider_arn}:sub": "system:serviceaccount:kube-system:aws-load-balancer-controller"
+        }
+      }
     }
   ]
 }
@@ -96,3 +108,5 @@ resource "aws_iam_role_policy" "tf-eks-pipeline" {
 }
 POLICY
 }
+
+
